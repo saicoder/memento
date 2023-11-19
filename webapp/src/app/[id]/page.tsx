@@ -89,10 +89,6 @@ export default function MementoView() {
     if (isConnected) loadMemento()
   }, [isConnected])
 
-  useEffect(() => {
-    unlockSecret('123')
-  }, [])
-
   return (
     <div className="w-full px-[20px] h-[100vh] mx-auto flex flex-col items-center justify-center py-5">
       <Image alt="memento-logo" src="logo.svg" width={185} height={236} />

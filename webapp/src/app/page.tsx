@@ -10,6 +10,7 @@ import MementoBox from '@/components/MementoBox/MementoBox'
 import { Memento, uploadMemento } from '@/services/memento'
 import { useContract } from '@/services/contract'
 import LoadingDialog from '@/components/CreateMementoForm/LoadingDialog/LoadingDialog'
+import { unlockSecret } from '@/services/vdf'
 
 // Before starting run ETH Node with: npm run evm-node
 // Then deploy contract locally with: npm run deploy-contract
@@ -23,29 +24,31 @@ import LoadingDialog from '@/components/CreateMementoForm/LoadingDialog/LoadingD
 export default function Home() {
   const [page, setPage] = useState('view')
 
-  const [currentStep, setCurrentStep] = useState(0);
-  const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [currentStep, setCurrentStep] = useState(0)
+  const [showCreateDialog, setShowCreateDialog] = useState(false)
 
-  const [id, setId] = useState('');
-  const [pwd, setPwd] = useState('');
+  const [id, setId] = useState('')
+  const [pwd, setPwd] = useState('')
 
-  const { getContract } = useContract();
+  const { getContract } = useContract()
 
   const createMemento = async (memento: Memento, date: Date) => {
-    setShowCreateDialog(true);
-    const pwd = Math.round(Math.random() * 1e8).toString();
-    setPwd(pwd);
+    setShowCreateDialog(true)
+    const pwd = Math.round(Math.random() * 1e8).toString()
+    setPwd(pwd)
     const cid = await uploadMemento(memento, pwd)
     setCurrentStep(3)
 
     const contract = getContract()
     const id = new Date().getTime()
-    setId(id.toString());
+    setId(id.toString())
 
     await contract.create(id, cid, date!.getTime(), { value: 100 }).then((t) => t.wait())
 
-    setCurrentStep(5);
-  };
+    unlockSecret('123', (date!.getTime() - new Date().getTime()) / 1000 / 60)
+
+    setCurrentStep(5)
+  }
 
   return (
     <>
@@ -56,14 +59,18 @@ export default function Home() {
 
         <CreateMementoForm onCreate={createMemento} />
 
-        {showCreateDialog &&
+        {showCreateDialog && (
           <LoadingDialog
             currentStep={currentStep}
-            onClose={() => { setShowCreateDialog(false); setId(''); setPwd(''); }}
+            onClose={() => {
+              setShowCreateDialog(false)
+              setId('')
+              setPwd('')
+            }}
             link={global.window ? `${window.location.host}/${id}` : id}
             password={pwd}
           />
-        }
+        )}
 
         <MementoBox />
       </main>
