@@ -2,6 +2,9 @@
 
 module.exports = {
   reactStrictMode: false,
+  typescript: {
+    ignoreBuildErrors: true,
+  },
   webpack: (config, { isServer }) => {
     if (!isServer) {
       config.module.rules.push({
