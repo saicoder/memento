@@ -57,6 +57,11 @@ Memento relies on a network of Solvers who work on computing the time-lock puzzl
 ![Memento Interface](images/8.png)
 ![Memento Interface](images/9.png)
 
+### Solver written in Rust
+
+![Memento Interface](images/13.png)
+![Memento Interface](images/14.png)
+
 ## Roadmap
 
 - **Smart Contract**: Developed and deployed on Scroll EVM.
